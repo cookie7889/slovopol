@@ -52,7 +52,9 @@ function delay(ms: number): Promise<void> {
 }
 
 // Ждёт появления window.YaGames (sdk.js может загружаться с задержкой)
-async function waitForYaGames(timeoutMs: number): Promise<YaGamesGlobal | null> {
+async function waitForYaGames(
+  timeoutMs: number,
+): Promise<YaGamesGlobal | null> {
   const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline) {
     const yaGames = window.YaGames
@@ -97,7 +99,10 @@ function createSdk(ysdk: YaGamesSdkInstance): ISdk {
 
     async saveData<T>(data: T): Promise<void> {
       try {
-        await getPlayerApi().setData(data as unknown as Record<string, unknown>, true)
+        await getPlayerApi().setData(
+          data as unknown as Record<string, unknown>,
+          true,
+        )
       } catch {
         // Облачное сохранение недоступно — игра продолжает работу без него
       }
