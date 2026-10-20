@@ -7,15 +7,18 @@ import type { ISdk } from './types'
 
 export type { ISdk, PlayerData } from './types'
 
-// Сколько ждать window.YaGames, пока загрузится официальный SDK
-const YA_GAMES_TIMEOUT_MS = 3000
+// Сколько ждать window.YaGames в prod. Запас 500мс до 3с: с учётом создания
+// инстанса и init() mock-инициализация обязана появиться не позже 3с после загрузки
+const YA_GAMES_TIMEOUT_MS = 2500
 
 // Экземпляр кешируем: getSdk() можно вызывать много раз
 let sdkInstance: Promise<ISdk> | null = null
 
 /**
- * Возвращает SDK-экземпляр: реальный — если window.YaGames появился
- * за отведённое время, иначе mock. Полученный выбор кешируется.
+ * Возвращает SDK-экземпляр и кеширует выбор.
+ * В dev — сразу mock, без ожидания window.YaGames (старт без 3-секундной паузы).
+ * В prod — ждём window.YaGames до 3с → real; не дождались/ошибка → mock
+ * (игра обязана работать и вне iframe Яндекса).
  * init() приложение вызывает само, когда будет готово к рекламе.
  */
 export function getSdk(): Promise<ISdk> {
@@ -26,6 +29,11 @@ export function getSdk(): Promise<ISdk> {
 }
 
 async function createSdk(): Promise<ISdk> {
+  // В dev SDK Яндекса не подключаем — mock сразу, без паузы
+  if (import.meta.env.DEV) {
+    console.log('[SDK:mock] dev-режим: SDK Яндекса не ждём')
+    return createMockSdk()
+  }
   const real = await createRealSdk(YA_GAMES_TIMEOUT_MS)
   return real ?? createMockSdk()
 }

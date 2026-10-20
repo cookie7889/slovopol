@@ -53,5 +53,32 @@ export function createMockSdk(): ISdk {
     gameplayStop() {
       console.log(LOG_PREFIX, 'gameplayStop')
     },
+
+    ready() {
+      console.log(LOG_PREFIX, 'ready')
+    },
+
+    lang(): string {
+      console.log(LOG_PREFIX, 'lang', 'ru')
+      return 'ru'
+    },
+
+    isMobile(): boolean {
+      console.log(LOG_PREFIX, 'isMobile', false)
+      return false
+    },
+
+    async setScore(boardId: string, score: number): Promise<void> {
+      console.log(LOG_PREFIX, 'setScore', boardId, score)
+    },
+
+    async purchase(id: string): Promise<void> {
+      console.log(LOG_PREFIX, 'purchase', id)
+    },
+
+    async hasPurchase(id: string): Promise<boolean> {
+      console.log(LOG_PREFIX, 'hasPurchase', id)
+      return false
+    },
   }
 }

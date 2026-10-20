@@ -29,7 +29,20 @@ interface YaGamesAdvApi {
 interface YaGamesSdkInstance {
   player(): YaGamesPlayerApi
   adv?: YaGamesAdvApi
-  features?: { LoadingAPI?: { ready?: () => void } }
+  features?: { LoadingAPI?: { ready: () => void } }
+  deviceInfo?: { isMobile?: () => boolean }
+  environment?: { i18n?: { lang?: string } }
+  leaderboards?: {
+    setScore?(
+      leaderboardName: string,
+      score: number,
+      extraData?: string,
+    ): Promise<void>
+  }
+  payments?: {
+    purchase?(data: { id: string }): Promise<unknown>
+    getPurchases?(): Promise<unknown>
+  }
   gameplayStart?: () => void
   gameplayStop?: () => void
 }
@@ -146,6 +159,70 @@ function createSdk(ysdk: YaGamesSdkInstance): ISdk {
 
     gameplayStop() {
       ysdk.gameplayStop?.()
+    },
+
+    ready() {
+      try {
+        ysdk.features?.LoadingAPI?.ready()
+      } catch {
+        // Сигнал загрузки недоступен — игра продолжает работу
+      }
+    },
+
+    lang(): string {
+      // Дока: yandex.ru/dev/games/doc/ru/sdk/sdk-environment.md, «Структура i18n»
+      try {
+        return ysdk.environment?.i18n?.lang ?? 'ru'
+      } catch {
+        return 'ru'
+      }
+    },
+
+    isMobile(): boolean {
+      // Дока: yandex.ru/dev/games/doc/ru/sdk/sdk-params.md, «Объект deviceInfo»
+      try {
+        return ysdk.deviceInfo?.isMobile?.() ?? false
+      } catch {
+        return false
+      }
+    },
+
+    async setScore(boardId: string, score: number): Promise<void> {
+      // Дока: yandex.ru/dev/games/doc/ru/sdk/sdk-leaderboard.md, «Инициализация»:
+      // устаревший ysdk.getLeaderboards() → ysdk.leaderboards.setScore()
+      try {
+        await ysdk.leaderboards?.setScore?.(boardId, score)
+      } catch {
+        // Лидерборд не создан в Консоли (404) или оффлайн — не роняем игру
+      }
+    },
+
+    async purchase(id: string): Promise<void> {
+      // Дока: yandex.ru/dev/games/doc/ru/sdk/sdk-purchases.md, «Активация
+      // процесса покупки»: ysdk.payments.purchase({ id })
+      try {
+        await ysdk.payments?.purchase?.({ id })
+      } catch {
+        // Отмена покупки игроком или платежи недоступны — не роняем игру
+      }
+    },
+
+    async hasPurchase(id: string): Promise<boolean> {
+      // Дока: yandex.ru/dev/games/doc/ru/sdk/sdk-purchases.md, «Получение
+      // списка купленных товаров»: payments.getPurchases() → IPurchase[]
+      try {
+        const purchases: unknown = await ysdk.payments?.getPurchases?.()
+        if (!Array.isArray(purchases)) return false
+        return purchases.some(
+          (item: unknown) =>
+            typeof item === 'object' &&
+            item !== null &&
+            'productID' in item &&
+            item.productID === id,
+        )
+      } catch {
+        return false
+      }
     },
   }
 }

@@ -23,4 +23,16 @@ export interface ISdk {
   gameplayStart(): void
   /** Сигнал платформе: геймплей остановлен */
   gameplayStop(): void
+  /** Сигнал LoadingAPI: игра загрузилась, можно скрывать экран ожидания */
+  ready(): void
+  /** Язык интерфейса Яндекс Игр, ISO 639-1 ('ru', 'en', …) */
+  lang(): string
+  /** true — мобильное устройство (телефон/планшет) */
+  isMobile(): boolean
+  /** Отправить счёт в лидерборд с техническим названием boardId */
+  setScore(boardId: string, score: number): Promise<void>
+  /** Инап-покупка: открывает платёжный фрейм; resolve — после завершения/отмены */
+  purchase(id: string): Promise<void>
+  /** Есть ли у игрока покупка с таким id */
+  hasPurchase(id: string): Promise<boolean>
 }
