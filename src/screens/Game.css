@@ -1,0 +1,161 @@
+/* Экран остановки: шапка, поле текущего слова, колесо букв, действия. */
+
+.game {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 4px 16px;
+}
+
+.game__header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.game__back {
+  align-self: flex-start;
+  min-height: 48px;
+  padding: 8px 16px;
+}
+
+.game__title {
+  font-size: 26px;
+  margin: 0;
+}
+
+.game__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  color: var(--muted);
+}
+
+.game__score {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Поле текущего слова */
+.game__word {
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  padding: 10px;
+}
+
+.game__slots {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--bg);
+  border: 2px dashed var(--muted);
+  border-radius: 10px;
+}
+
+.slot--filled {
+  color: var(--ink);
+  border-style: solid;
+  border-color: var(--accent);
+}
+
+/* Строка статуса: мягкие состояния, без «страшного» красного */
+.game__status {
+  min-height: 28px;
+  font-size: 18px;
+  color: var(--muted);
+}
+
+.game__status[data-flash='ok'],
+.game__status[data-flash='bonus'] {
+  color: var(--ok);
+  font-weight: 600;
+}
+
+/* Колесо букв */
+.wheel {
+  --wheel-size: min(88vw, 340px);
+  position: relative;
+  width: var(--wheel-size);
+  aspect-ratio: 1;
+  margin: 4px auto 0;
+}
+
+.wheel__btn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--tile);
+  height: var(--tile);
+  padding: 0;
+  font-family: var(--font-family);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  cursor: pointer;
+  touch-action: manipulation;
+  transform: translate(-50%, -50%) rotate(var(--a))
+    translateY(calc(var(--wheel-size) / -2 + var(--tile) / 2 - 8px))
+    rotate(calc(var(--a) * -1));
+}
+
+.wheel__btn:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.wheel__btn.is-used {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Кнопки действий */
+.game__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.game__actions .btn {
+  flex: 1 1 0;
+}
+
+/* Тряска поля при неверном слове (мягкая, GDD §3) */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.game__word[data-flash='bad'] {
+  animation: shake 300ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game__word[data-flash='bad'] {
+    animation: none;
+  }
+
+  .btn:active {
+    transform: none;
+  }
+}
