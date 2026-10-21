@@ -36,13 +36,13 @@ export interface CheckResult {
 }
 
 // raw — что набрал игрок (может быть в любом регистре, с Ё)
-// guessed — уже найденные слова этой остановки (main + bonus)
+// guessed — нормализованные слова (как их возвращает checkWord: upper, Ё→Е)
 export function checkWord(raw: string, stop: StopData, guessed: ReadonlySet<string>): CheckResult
 ```
 
 ### 2. Порядок проверок (важен, зафиксирован)
 
-1. `normalizeWord(raw)` → длина < 3 → `invalid/short` (длина > 7 невозможна: ограничение колеса, но проверить и вернуть `short` тоже);
+1. `normalizeWord(raw)` → длина < 3 → invalid/short. Проверку «>7» не делать — её гарантированно закрывает шаг 2.
 2. кратность букв: слово собирается из `stop.letters` без повторов (буквы набора уникальны по GDD §2, поэтому достаточно: каждая буква слова ∈ набора И повторов букв в слове нет) → иначе `invalid/letters`;
 3. слово уже в `guessed` → `duplicate`;
 4. слово есть в `stop.main` → `correct`;
@@ -53,13 +53,15 @@ export function checkWord(raw: string, stop: StopData, guessed: ReadonlySet<stri
 
 ## Критерии приёмки
 
-- [ ] Ручная проверка в dev-режиме (временно через консоль/вызов модуля) для остановки 1 (`ВОКЗАЛТ`):
+- [ ] Временно в main.tsx (после init SDK) добавить console.log-блок со всеми кейсами ниже (ожидаемое/фактическое рядом), прогнать npm run dev, фактический вывод скопировать в отчёт, блок удалить до коммита.
   - `checkWord('вокзал', stop, empty)` → `correct`;
-  - слово с Ё (например, `'ЁлКА'`-подобное из букв набора) нормализуется в Е перед проверкой;
   - `'ЗАЛ'` второй раз (в `guessed`) → `duplicate`;
   - `'ЗОНТ'` (буквы не из набора) → `invalid/letters`;
   - `'КЗАОЛВТ'`-подобный мусор (буквы из набора, слова нет) → `invalid/unknown`;
   - `'ТО'` → `invalid/short`.
+  - checkWord('ЛЁТО', stop3, empty) → correct, result.word === 'ЛЕТО' (Ё→Е до проверки; stop 3 САМОЛЕТ);
+  - checkWord('ЁЛКА', stop1, empty) → invalid/letters, result.word === 'ЕЛКА' (нормализация видна по полю word).
+  - checkWord('омела', stop3, empty) → bonus (ОМЕЛА ∈ bonus stop 3, буквы ⊆ САМОЛЕТ).
 - [ ] Случай «двух одинаковых букв в слове» (напр. `'ВОЛОВА'`) → `invalid/letters`.
 - [ ] `npm run lint && npm run typecheck && npm run build` зелёные.
 - [ ] Коммит `W2-1: checkWord (correct/bonus/duplicate/invalid)`.

@@ -118,6 +118,7 @@ export interface GameState {
 - меню-заглушка: заголовок из `strings.menu.title`, `pickStop`, кнопки «Остановка {n}: {city}» по `getStopIds()` (стиль .btn-secondary);
 - это НЕ итоговый Home-экран GDD §9 (тот появится с картой) — пометить комментарием «заглушка навигации до W3-1»;
 - `App.css` и демо-ассеты (hero/react/vite) из разметки убрать, файлы `src/assets/*` пока не удалять.
+- `<Game key={stopId} stop={stop} onExit={…} />` — ключ по stopId обязателен: компонент монтируется заново на каждую остановку, `createGameState(stop)` вызывается на монтировании. Переиспользовать состояние между остановками запрещено.
 
 ### 5. `src/strings.ts`
 
