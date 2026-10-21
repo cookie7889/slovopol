@@ -1,0 +1,152 @@
+/* Сетка слов остановки: группы по длине, одна строка — одно слово.
+   Найденные слова — буквами, ненайденные — мягкой точкой (структура видна). */
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+}
+
+.grid__title {
+  font-size: 20px;
+  margin: 0;
+}
+
+.grid__group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+/* Группы стоят рядом и переносятся — сетка не растёт вниз списком */
+.grid__groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+
+.grid__group-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0;
+}
+
+.grid__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grid__row {
+  display: flex;
+  gap: 4px;
+}
+
+.grid__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--muted);
+  border-radius: 8px;
+}
+
+.grid__cell--found {
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--accent);
+}
+
+/* Бонусные слова: только найденные, отдельной строкой */
+.grid__bonus {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.grid__bonus-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0;
+}
+
+.grid__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grid__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--ok);
+  border-radius: 999px;
+  animation: pop 180ms ease-out backwards;
+}
+
+.grid__chip-word {
+  font-size: 20px;
+}
+
+.grid__chip-label {
+  font-size: 18px;
+  color: var(--ok);
+}
+
+/* Анимация «печатается»: буквы появляются по очереди (задержка на букву) */
+@keyframes pop {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.grid__cell--pop {
+  animation: pop 180ms ease-out backwards;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+
+/* Уменьшенная анимация: только прозрачность, без трансформаций */
+@media (prefers-reduced-motion: reduce) {
+  .grid__cell--pop,
+  .grid__chip {
+    animation-name: fade;
+  }
+}

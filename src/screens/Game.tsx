@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useReducer } from 'react'
 import type { CSSProperties } from 'react'
 import { getSdk } from '../sdk'
+import WordsGrid from '../components/WordsGrid'
 import { createGameReducer, createGameState } from '../game/reducer'
 import { normalizeWord } from '../game/levels'
 import type { StopData } from '../game/types'
@@ -214,6 +215,15 @@ export default function Game({ stop, onExit }: GameProps) {
           {strings.game.accept}
         </button>
       </div>
+
+      {/* Сетка слов — часть экрана остановки (ГДД §3, п. 3).
+          Размер сетки не зависит от числа найденных слов — колесо не сдвигается. */}
+      <WordsGrid
+        main={stop.main}
+        guessedMain={state.guessedMain}
+        guessedBonus={state.guessedBonus}
+        flash={state.flash}
+      />
     </div>
   )
 }

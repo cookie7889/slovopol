@@ -20,6 +20,14 @@ export const strings = {
     statusDuplicate: 'Уже найдено',
     statusUnknown: 'Такого слова нет',
   },
+  grid: {
+    title: 'Слова остановки',
+    group: 'Слова из {n} букв',
+    rowHidden: 'Не найдено слово из {n} букв',
+    placeholder: '·',
+    bonusTitle: 'Бонусные слова:',
+    bonusLabel: 'Бонус',
+  },
 } as const
 
 // Подстановка значений в шаблон строки: «Очки: {score}» → «Очки: 30».
