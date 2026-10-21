@@ -64,16 +64,16 @@ export default function WordsGrid({
   const flashSeq = flash?.seq ?? 0
 
   return (
-    <section className="grid">
-      <h2 className="grid__title">{strings.grid.title}</h2>
+    <section className="wg">
+      <h2 className="wg__title">{strings.grid.title}</h2>
 
-      <div className="grid__groups">
+      <div className="wg__groups">
         {groups.map((group) => (
-          <div className="grid__group" key={group.length}>
-            <h3 className="grid__group-title">
+          <div className="wg__group" key={group.length}>
+            <h3 className="wg__group-title">
               {fillTemplate(strings.grid.group, { n: group.length })}
             </h3>
-            <ul className="grid__rows">
+            <ul className="wg__rows">
               {group.words.map((word, rowIndex) => {
                 const isFound = foundMain.has(word)
                 const isPop = isFound && word === popWord
@@ -87,7 +87,7 @@ export default function WordsGrid({
                       i: rowIndex + 1,
                     })
                 return (
-                  <li className="grid__row" key={word} aria-label={label}>
+                  <li className="wg__row" key={word} aria-label={label}>
                     {Array.from(word).map((letter, index) => {
                       const style: CellStyle = { '--i': String(index) }
                       // key с seq — одинаковые события подряд перезапускают pop
@@ -95,10 +95,10 @@ export default function WordsGrid({
                         ? `${index}-${flashSeq}`
                         : String(index)
                       const className = isPop
-                        ? 'grid__cell grid__cell--found grid__cell--pop'
+                        ? 'wg__cell wg__cell--found wg__cell--pop'
                         : isFound
-                          ? 'grid__cell grid__cell--found'
-                          : 'grid__cell'
+                          ? 'wg__cell wg__cell--found'
+                          : 'wg__cell'
                       return (
                         <span
                           className={className}
@@ -119,13 +119,21 @@ export default function WordsGrid({
       </div>
 
       {guessedBonus.length > 0 && (
-        <div className="grid__bonus">
-          <h3 className="grid__bonus-title">{strings.grid.bonusTitle}</h3>
-          <ul className="grid__chips">
+        <div className="wg__bonus">
+          <h3 className="wg__bonus-title">{strings.grid.bonusTitle}</h3>
+          <ul className="wg__chips">
             {guessedBonus.map((word) => (
-              <li className="grid__chip" key={word}>
-                <span className="grid__chip-word">{word}</span>
-                <span className="grid__chip-label">
+              // Слово в подписи — строчными (скринридер не читает капс по
+              // буквам), само слово на экране остаётся заглавными.
+              <li
+                className="wg__chip"
+                key={word}
+                aria-label={`${word.toLowerCase()}, ${strings.grid.bonusLabel}`}
+              >
+                <span className="wg__chip-word" aria-hidden="true">
+                  {word}
+                </span>
+                <span className="wg__chip-label" aria-hidden="true">
                   {strings.grid.bonusLabel}
                 </span>
               </li>

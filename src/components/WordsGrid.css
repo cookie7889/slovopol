@@ -1,7 +1,7 @@
 /* Сетка слов остановки: группы по длине, одна строка — одно слово.
    Найденные слова — буквами, ненайденные — мягкой точкой (структура видна). */
 
-.grid {
+.wg {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -11,12 +11,12 @@
   border-radius: var(--radius);
 }
 
-.grid__title {
+.wg__title {
   font-size: 20px;
   margin: 0;
 }
 
-.grid__group {
+.wg__group {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -24,20 +24,20 @@
 }
 
 /* Группы стоят рядом и переносятся — сетка не растёт вниз списком */
-.grid__groups {
+.wg__groups {
   display: flex;
   flex-wrap: wrap;
   gap: 12px 24px;
 }
 
-.grid__group-title {
+.wg__group-title {
   font-size: 18px;
   font-weight: 600;
   color: var(--muted);
   margin: 0;
 }
 
-.grid__rows {
+.wg__rows {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -46,12 +46,12 @@
   list-style: none;
 }
 
-.grid__row {
+.wg__row {
   display: flex;
   gap: 4px;
 }
 
-.grid__cell {
+.wg__cell {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,27 +65,27 @@
   border-radius: 8px;
 }
 
-.grid__cell--found {
+.wg__cell--found {
   color: var(--ink);
   background: var(--card);
   border: 2px solid var(--accent);
 }
 
 /* Бонусные слова: только найденные, отдельной строкой */
-.grid__bonus {
+.wg__bonus {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.grid__bonus-title {
+.wg__bonus-title {
   font-size: 18px;
   font-weight: 600;
   color: var(--muted);
   margin: 0;
 }
 
-.grid__chips {
+.wg__chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -94,7 +94,7 @@
   list-style: none;
 }
 
-.grid__chip {
+.wg__chip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -108,11 +108,11 @@
   animation: pop 180ms ease-out backwards;
 }
 
-.grid__chip-word {
+.wg__chip-word {
   font-size: 20px;
 }
 
-.grid__chip-label {
+.wg__chip-label {
   font-size: 18px;
   color: var(--ok);
 }
@@ -138,15 +138,15 @@
   }
 }
 
-.grid__cell--pop {
+.wg__cell--pop {
   animation: pop 180ms ease-out backwards;
   animation-delay: calc(var(--i, 0) * 40ms);
 }
 
 /* Уменьшенная анимация: только прозрачность, без трансформаций */
 @media (prefers-reduced-motion: reduce) {
-  .grid__cell--pop,
-  .grid__chip {
+  .wg__cell--pop,
+  .wg__chip {
     animation-name: fade;
   }
 }
