@@ -1,0 +1,95 @@
+/* Экран «Остановка пройдена»: итоги остановки, звёзды, удвоение очков */
+
+.complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 4px 24px;
+  text-align: center;
+}
+
+.complete__title {
+  font-size: 26px;
+  margin: 0;
+}
+
+/* Звёзды (компонент Stars) */
+.stars {
+  display: flex;
+  gap: 8px;
+}
+
+.star {
+  width: 44px;
+  height: 44px;
+}
+
+.complete__city {
+  font-size: 22px;
+  margin: 0;
+}
+
+/* Факт о городе: спокойный текст, ширина строки ограничена для чтения */
+.complete__fact {
+  max-width: 44ch;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.complete__scores {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.complete__score {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.complete__total {
+  font-size: 18px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.complete__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+}
+
+/* Главный акцент экрана — удвоение очков */
+.complete__double {
+  width: 100%;
+}
+
+.complete__double:disabled {
+  background: var(--card);
+  border-color: var(--ok);
+  color: var(--ok);
+  cursor: default;
+}
+
+.complete__ad {
+  min-height: 24px;
+  font-size: 18px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.complete__route {
+  font-size: 18px;
+  color: var(--ok);
+  margin: 0;
+}
+
+.complete__back {
+  justify-content: center;
+}

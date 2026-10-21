@@ -28,6 +28,19 @@ export const strings = {
     bonusTitle: 'Бонусные слова:',
     bonusLabel: 'Бонус',
   },
+  complete: {
+    title: 'Остановка пройдена!',
+    starsLabel: '{n} из {N} звёзд',
+    scoreLabel: 'Очки за остановку: {score}',
+    totalLabel: 'Всего очков: {total}',
+    double: 'Удвоить ×2',
+    doubled: 'Очки удвоены',
+    adUnavailable: 'Реклама сейчас недоступна',
+    next: 'Дальше',
+    toMenu: 'В меню',
+    routeFinished: 'Демо-маршрут пройден',
+    back: 'К остановкам',
+  },
 } as const
 
 // Подстановка значений в шаблон строки: «Очки: {score}» → «Очки: 30».

@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useReducer } from 'react'
+import { useEffect, useMemo, useReducer, useRef } from 'react'
 import type { CSSProperties } from 'react'
 import { getSdk } from '../sdk'
 import WordsGrid from '../components/WordsGrid'
 import { createGameReducer, createGameState } from '../game/reducer'
+import type { GameState } from '../game/reducer'
 import { normalizeWord } from '../game/levels'
 import type { StopData } from '../game/types'
 import { fillTemplate, strings } from '../strings'
@@ -11,6 +12,8 @@ import './Game.css'
 interface GameProps {
   stop: StopData
   onExit: () => void
+  // Вызов при завершении остановки (все основные слова найдены)
+  onComplete: (result: GameState) => void
 }
 
 // Слотов в поле текущего слова — столько же, сколько букв в колесе
@@ -19,6 +22,8 @@ const SLOTS_COUNT = 7
 const WHEEL_STEP_DEG = 360 / 7
 // Через сколько миллисекунд гаснет строка статуса
 const STATUS_TIMEOUT_MS = 4000
+// Переход к экрану итогов с небольшой задержкой (GDD)
+const COMPLETE_DELAY_MS = 800
 // Буква с клавиатуры (Ё нормализуется в Е)
 const LETTER_RE = /^[а-яёА-ЯЁ]$/
 
@@ -40,13 +45,19 @@ function findFreeTile(
   return null
 }
 
-export default function Game({ stop, onExit }: GameProps) {
+export default function Game({ stop, onExit, onComplete }: GameProps) {
   // Редьюсер привязан к остановке: пересоздаётся только при смене stop
   const reducer = useMemo(() => createGameReducer(stop), [stop])
   const [state, dispatch] = useReducer(reducer, stop, createGameState)
   // Номер последнего события (вспышки) и его вид — для статуса и анимаций
   const flashSeq = state.flash?.seq ?? 0
   const flashKind = state.flash?.kind ?? 'none'
+  const completedRef = useRef(false)
+  const stateRef = useRef(state)
+
+  useEffect(() => {
+    stateRef.current = state
+  }, [state])
 
   // Ввод с физической клавиатуры равен тапу по плитке
   useEffect(() => {
@@ -116,6 +127,21 @@ export default function Game({ stop, onExit }: GameProps) {
     }, STATUS_TIMEOUT_MS)
     return () => window.clearTimeout(timer)
   }, [state.statusKey, flashSeq])
+
+  // Завершение остановки: все основные слова найдены — переход к итогам
+  useEffect(() => {
+    if (completedRef.current) {
+      return
+    }
+    if (state.guessedMain.length !== stop.main.length) {
+      return
+    }
+    completedRef.current = true
+    const timer = window.setTimeout(() => {
+      onComplete(stateRef.current)
+    }, COMPLETE_DELAY_MS)
+    return () => window.clearTimeout(timer)
+  }, [state.guessedMain.length, stop.main.length, onComplete])
 
   const statusText =
     state.statusKey === null ? '' : strings.game[state.statusKey]

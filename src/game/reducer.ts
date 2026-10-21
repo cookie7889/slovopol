@@ -39,6 +39,8 @@ export type GameAction =
   | { type: 'ERASE' }
   | { type: 'ACCEPT' }
   | { type: 'CLEAR_STATUS' }
+  // Удвоение очков остановки (после просмотра рекламы)
+  | { type: 'DOUBLE' }
 
 // Минимальная длина слова (ГДД §2: слова 3–7 букв)
 const MIN_WORD_LENGTH = 3
@@ -76,6 +78,11 @@ export function createGameReducer(stop: StopData): GameReducer {
         // Текст статуса гаснет, последняя вспышка остаётся (её использует
         // анимация W2-4), счётчик событий не обнуляется.
         return state.statusKey === null ? state : { ...state, statusKey: null }
+      case 'DOUBLE':
+        // Повторное удвоение запрещено: флаг doubled необратим.
+        return state.doubled
+          ? state
+          : { ...state, score: state.score * 2, doubled: true }
       default:
         return state
     }
