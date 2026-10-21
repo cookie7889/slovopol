@@ -64,7 +64,7 @@ export default function WordsGrid({
   const flashSeq = flash?.seq ?? 0
 
   return (
-    <section className="grid" aria-label={strings.grid.title}>
+    <section className="grid">
       <h2 className="grid__title">{strings.grid.title}</h2>
 
       <div className="grid__groups">
@@ -74,12 +74,18 @@ export default function WordsGrid({
               {fillTemplate(strings.grid.group, { n: group.length })}
             </h3>
             <ul className="grid__rows">
-              {group.words.map((word) => {
+              {group.words.map((word, rowIndex) => {
                 const isFound = foundMain.has(word)
                 const isPop = isFound && word === popWord
+                // Найденное слово — строчными (скринридер не читает капс
+                // по буквам), ненайденный ряд — с номером, чтобы ряды
+                // различались для скринридера.
                 const label = isFound
-                  ? word
-                  : fillTemplate(strings.grid.rowHidden, { n: group.length })
+                  ? word.toLowerCase()
+                  : fillTemplate(strings.grid.rowHidden, {
+                      n: group.length,
+                      i: rowIndex + 1,
+                    })
                 return (
                   <li className="grid__row" key={word} aria-label={label}>
                     {Array.from(word).map((letter, index) => {

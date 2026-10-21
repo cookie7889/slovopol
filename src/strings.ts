@@ -23,7 +23,7 @@ export const strings = {
   grid: {
     title: 'Слова остановки',
     group: 'Слова из {n} букв',
-    rowHidden: 'Не найдено слово из {n} букв',
+    rowHidden: 'Не найдено слово из {n} букв, ряд {i}',
     placeholder: '·',
     bonusTitle: 'Бонусные слова:',
     bonusLabel: 'Бонус',

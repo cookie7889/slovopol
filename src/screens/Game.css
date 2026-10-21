@@ -150,9 +150,19 @@
   animation: shake 300ms ease-in-out;
 }
 
+/* Уменьшенная анимация: вместо сдвига — только прозрачность (ГДД §12) */
+@keyframes fadeSoft {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .game__word[data-flash='bad'] {
-    animation: none;
+    animation: fadeSoft 300ms ease-out;
   }
 
   .btn:active {
